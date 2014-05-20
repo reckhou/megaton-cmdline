@@ -54,7 +54,6 @@ func getURL(uri string) (content []byte) {
     delta := timeEnd.Sub(timeStart)
     verbose.Print("Query using: ", delta.String())
     content = responseContent
-    //TODO: Handle response
     verbose.Print("The calculated length is:", len(string(responseContent)), "for the url:", url)
     verbose.Print("   ", response.StatusCode)
     hdr := response.Header
