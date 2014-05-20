@@ -13,7 +13,9 @@ var (
 )
 
 func main() {
-  log.Println(os.Args)
+  log.Println("Megaton command line tool V1.0")
+  log.Println("Megaton host:", gval.Args["MTAddr"])
+
   argCnt := len(os.Args)
   if argCnt < 2 {
     usage()
@@ -31,7 +33,7 @@ func main() {
     if arg == "-pa" || arg == "--publish-all" {
       api.PublishAll(gval.Args["project"], gval.Args["version"])
     } else if arg == "-np" || arg == "--notify-publish" {
-      api.NotifyPublish(gval.Args["project"])
+      api.NotifyPublish(gval.Args["project"], gval.Args["version"])
     } else if arg == "-ov" || arg == "--online-version" {
       api.SetOnlineVersionID(gval.Args["project"], gval.Args["versionID"])
     } else if arg == "-ap" || arg == "--auto-publish" {

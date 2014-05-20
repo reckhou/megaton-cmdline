@@ -12,7 +12,7 @@ func PushToOSS(project string) bool {
 
   uri := "/api/pushToOSS?project=" + project
   resp := getURL(uri)
-  return CheckResponse(resp)
+  return CheckResponse(uri, resp)
 }
 
 func PushToCDN(project string) bool {
@@ -22,7 +22,7 @@ func PushToCDN(project string) bool {
 
   uri := "/api/pushToCDN?project=" + project
   resp := getURL(uri)
-  return CheckResponse(resp)
+  return CheckResponse(uri, resp)
 }
 
 func PublishAll(project, version string) bool {
@@ -32,17 +32,17 @@ func PublishAll(project, version string) bool {
 
   uri := "/api/publishAll?project=" + project + "&version=" + version
   resp := getURL(uri)
-  return CheckResponse(resp)
+  return CheckResponse(uri, resp)
 }
 
-func NotifyPublish(project string) bool {
-  if project == "" {
+func NotifyPublish(project, version string) bool {
+  if project == "" || version == "" {
     return false
   }
 
-  uri := "/api/notifyPublish?project=" + project
+  uri := "/api/notifyPublish?project=" + project + "&version=" + version
   resp := getURL(uri)
-  return CheckResponse(resp)
+  return CheckResponse(uri, resp)
 }
 
 func SetOnlineVersionID(project, versionID string) bool {
@@ -52,10 +52,10 @@ func SetOnlineVersionID(project, versionID string) bool {
 
   uri := "/api/setOnlineVersionID?project=" + project + "&versionID=" + versionID
   resp := getURL(uri)
-  return CheckResponse(resp)
+  return CheckResponse(uri, resp)
 }
 
-func CheckResponse(response []byte) bool {
+func CheckResponse(request string, response []byte) bool {
   if response == nil {
     log.Println("Megaton returns nil response.")
     return false
@@ -72,6 +72,7 @@ func CheckResponse(response []byte) bool {
     return false
   }
 
+  log.Println("Request", request, "succeed.")
   return true
 }
 
@@ -84,7 +85,7 @@ func AutoPublish(project, version, versionID string) bool {
     return false
   }
 
-  if !NotifyPublish(project) {
+  if !NotifyPublish(project, version) {
     return false
   }
 
