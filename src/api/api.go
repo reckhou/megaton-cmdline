@@ -1,8 +1,13 @@
 package api
 
 import (
+  "bytes"
   js "github.com/bitly/go-simplejson"
+  "github.com/reckhou/megaton-cmdline/src/file"
+  "github.com/reckhou/megaton-cmdline/src/globalVal"
+  "io/ioutil"
   "log"
+  "net/http"
 )
 
 func PushToOSS(project string) bool {
@@ -63,7 +68,8 @@ func CheckResponse(request string, response []byte) bool {
 
   respJson, err := js.NewJson(response)
   if err != nil {
-    log.Fatal("Invalid JSON response from Megaton: ", string(response))
+    log.Println("Response from Megaton:", string(response))
+    return true
   }
 
   errCode := respJson.Get("error").MustInt()
@@ -91,6 +97,48 @@ func AutoPublish(project, version, versionID string) bool {
 
   if !SetOnlineVersionID(project, versionID) {
     return false
+  }
+
+  return true
+}
+
+func UploadFile(localPath, project, fileName, relativePath, fileType string) bool {
+  if localPath == "" || project == "" || fileName == "" || relativePath == "" || (fileType != "raw" && fileType != "flat") {
+    return false
+  }
+
+  content := file.ReadFile(localPath)
+  if content == nil {
+    return false
+  }
+
+  transport := http.Transport{
+    Dial: dialTimeout,
+  }
+
+  client := http.Client{
+    Transport: &transport,
+  }
+
+  url := "http://" + globalVal.Args["MTAddr"] + "/api/uploadFile?project=" + project + "&relativePath=" + relativePath + "&name=" + fileName + "&fileType=" + fileType
+  req, err := http.NewRequest("POST", url, bytes.NewReader(content))
+  if err != nil {
+    log.Println(err)
+    return false
+  }
+
+  response, err := client.Do(req)
+  if err != nil {
+    log.Println(err)
+    return false
+  } else {
+    defer response.Body.Close()
+    responseContent, err := ioutil.ReadAll(response.Body)
+    if err != nil {
+      log.Println(err)
+    }
+
+    log.Println(string(responseContent))
   }
 
   return true

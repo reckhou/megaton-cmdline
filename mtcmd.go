@@ -24,7 +24,8 @@ func main() {
 
   parseArgs(os.Args)
   if gval.Args["project"] == "" {
-    log.Fatal("Project not given.")
+    log.Println("Project not given.")
+    usage()
   }
 
   for i := 1; i < argCnt; i++ {
@@ -42,6 +43,8 @@ func main() {
       api.PushToOSS(gval.Args["project"])
     } else if arg == "-pc" || arg == "--push-to-cdn" {
       api.PushToCDN(gval.Args["project"])
+    } else if arg == "-uf" || arg == "--upload-file" {
+      api.UploadFile(gval.Args["localPath"], gval.Args["project"], gval.Args["fileName"], gval.Args["relativePath"], gval.Args["fileType"])
     }
   }
 }
@@ -75,6 +78,12 @@ func parseArgs(args []string) bool {
       i++
     } else if arg == "-v" || arg == "--verbose" {
       gval.Verbose = true
+    } else if (arg == "-uf" || arg == "--upload-file") && (i+4 < argCnt) {
+      gval.Args["localPath"] = os.Args[i+1]
+      gval.Args["fileName"] = os.Args[i+2]
+      gval.Args["relativePath"] = os.Args[i+3]
+      gval.Args["fileType"] = os.Args[i+4]
+      i += 4
     }
 
     existArgs[arg] = ""
@@ -93,5 +102,6 @@ func usage() {
   log.Println("-pc | --push-to-cdn                            Push asset to CDN.")
   log.Println("-v  | --verbose                                Print debug log.")
   log.Println("-a  | --address <address>                      Appoint Megaton's address instead of address in config.")
+  log.Println("-uf | --upload-file <localPath> <fileName> <relativePath> <fileType> Upload file to megaton, fileType must be \"raw\" or \"flat\".")
   log.Println("--usage                                        This usage help.")
 }
