@@ -1,13 +1,9 @@
 package api
 
 import (
-  "bytes"
   js "github.com/bitly/go-simplejson"
   "github.com/reckhou/megaton-cmdline/src/file"
-  "github.com/reckhou/megaton-cmdline/src/globalVal"
-  "io/ioutil"
   "log"
-  "net/http"
 )
 
 func PushToOSS(project string) bool {
@@ -78,7 +74,10 @@ func CheckResponse(request string, response []byte) bool {
     return false
   }
 
-  log.Println("Request", request, "succeed.")
+  if request != "" {
+    log.Println("Request", request, "succeed.")
+  }
+
   return true
 }
 
@@ -112,34 +111,18 @@ func UploadFile(localPath, project, fileName, relativePath, fileType string) boo
     return false
   }
 
-  transport := http.Transport{
-    Dial: dialTimeout,
-  }
+  url := "/api/uploadFile?project=" + project + "&relativePath=" + relativePath + "&fileName=" + fileName + "&fileType=" + fileType
+  responseContent := postURL(url, content)
 
-  client := http.Client{
-    Transport: &transport,
-  }
+  return CheckResponse(url, responseContent)
+}
 
-  url := "http://" + globalVal.Args["MTAddr"] + "/api/uploadFile?project=" + project + "&relativePath=" + relativePath + "&name=" + fileName + "&fileType=" + fileType
-  req, err := http.NewRequest("POST", url, bytes.NewReader(content))
-  if err != nil {
-    log.Println(err)
+func RemoveFile(project, fileName string) bool {
+  if project == "" || fileName == "" {
     return false
   }
 
-  response, err := client.Do(req)
-  if err != nil {
-    log.Println(err)
-    return false
-  } else {
-    defer response.Body.Close()
-    responseContent, err := ioutil.ReadAll(response.Body)
-    if err != nil {
-      log.Println(err)
-    }
-
-    log.Println(string(responseContent))
-  }
-
-  return true
+  uri := "/api/removeFile?project=" + project + "&fileName=" + fileName
+  resp := getURL(uri)
+  return CheckResponse(uri, resp)
 }

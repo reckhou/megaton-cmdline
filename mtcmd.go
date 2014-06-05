@@ -19,7 +19,6 @@ func main() {
   argCnt := len(os.Args)
   if argCnt < 2 {
     usage()
-    return
   }
 
   parseArgs(os.Args)
@@ -30,8 +29,9 @@ func main() {
 
   for i := 1; i < argCnt; i++ {
     arg := os.Args[i]
-
-    if arg == "-pa" || arg == "--publish-all" {
+    if arg == "-h" || arg == "--usage" {
+      usage()
+    } else if arg == "-pa" || arg == "--publish-all" {
       api.PublishAll(gval.Args["project"], gval.Args["version"])
     } else if arg == "-np" || arg == "--notify-publish" {
       api.NotifyPublish(gval.Args["project"], gval.Args["version"])
@@ -45,6 +45,8 @@ func main() {
       api.PushToCDN(gval.Args["project"])
     } else if arg == "-uf" || arg == "--upload-file" {
       api.UploadFile(gval.Args["localPath"], gval.Args["project"], gval.Args["fileName"], gval.Args["relativePath"], gval.Args["fileType"])
+    } else if arg == "-rf" || arg == "--remove-file" {
+      api.RemoveFile(gval.Args["project"], gval.Args["fileName"])
     }
   }
 }
@@ -84,6 +86,9 @@ func parseArgs(args []string) bool {
       gval.Args["relativePath"] = os.Args[i+3]
       gval.Args["fileType"] = os.Args[i+4]
       i += 4
+    } else if (arg == "-rf" || arg == "--remove-file") && (i+1 < argCnt) {
+      gval.Args["fileName"] = os.Args[i+1]
+      i++
     }
 
     existArgs[arg] = ""
@@ -103,5 +108,7 @@ func usage() {
   log.Println("-v  | --verbose                                Print debug log.")
   log.Println("-a  | --address <address>                      Appoint Megaton's address instead of address in config.")
   log.Println("-uf | --upload-file <localPath> <fileName> <relativePath> <fileType> Upload file to megaton, fileType must be \"raw\" or \"flat\".")
-  log.Println("--usage                                        This usage help.")
+  log.Println("-rf | --remove-file <fileName>                 Remove a file, this will not delete file in file system, only mark it as removed.")
+  log.Println("-h  | --usage                                  This help.")
+  os.Exit(0)
 }

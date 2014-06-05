@@ -1,6 +1,7 @@
 package api
 
 import (
+  "bytes"
   gval "github.com/reckhou/megaton-cmdline/src/globalVal"
   "github.com/reckhou/megaton-cmdline/src/verbose"
   "io/ioutil"
@@ -64,4 +65,42 @@ func getURL(uri string) (content []byte) {
   }
 
   return content
+}
+
+func postURL(uri string, content []byte) (resp []byte) {
+  if uri == "" || content == nil {
+    return
+  }
+
+  url := URIToURL(uri)
+  log.Println(url)
+
+  resp = make([]byte, 0)
+  transport := http.Transport{
+    Dial: dialTimeout,
+  }
+
+  client := http.Client{
+    Transport: &transport,
+  }
+
+  req, err := http.NewRequest("POST", url, bytes.NewReader(content))
+  if err != nil {
+    log.Println(err)
+    return nil
+  }
+
+  response, err := client.Do(req)
+  if err != nil {
+    log.Println(err)
+    return nil
+  }
+  defer response.Body.Close()
+  resp, err = ioutil.ReadAll(response.Body)
+  if err != nil {
+    log.Println(err)
+    return nil
+  }
+
+  return resp
 }
