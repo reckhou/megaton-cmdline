@@ -73,7 +73,7 @@ func postURL(uri string, content []byte) (resp []byte) {
   }
 
   url := URIToURL(uri)
-  log.Println(url)
+  verbose.Print(url)
 
   resp = make([]byte, 0)
   transport := http.Transport{

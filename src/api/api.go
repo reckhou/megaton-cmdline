@@ -8,7 +8,7 @@ import (
 
 func PushToOSS(project string) bool {
   if project == "" {
-    return false
+    log.Fatal("Illegal param!")
   }
 
   uri := "/api/pushToOSS?project=" + project
@@ -18,7 +18,7 @@ func PushToOSS(project string) bool {
 
 func PushToCDN(project string) bool {
   if project == "" {
-    return false
+    log.Fatal("Illegal param!")
   }
 
   uri := "/api/pushToCDN?project=" + project
@@ -28,7 +28,7 @@ func PushToCDN(project string) bool {
 
 func PublishAll(project, version string) bool {
   if project == "" || version == "" {
-    return false
+    log.Fatal("Illegal param!")
   }
 
   uri := "/api/publishAll?project=" + project + "&version=" + version
@@ -38,7 +38,7 @@ func PublishAll(project, version string) bool {
 
 func NotifyPublish(project, version string) bool {
   if project == "" || version == "" {
-    return false
+    log.Fatal("Illegal param!")
   }
 
   uri := "/api/notifyPublish?project=" + project + "&version=" + version
@@ -48,7 +48,7 @@ func NotifyPublish(project, version string) bool {
 
 func SetOnlineVersionID(project, versionID string) bool {
   if project == "" || versionID == "" {
-    return false
+    log.Fatal("Illegal param!")
   }
 
   uri := "/api/setOnlineVersionID?project=" + project + "&versionID=" + versionID
@@ -83,7 +83,7 @@ func CheckResponse(request string, response []byte) bool {
 
 func AutoPublish(project, version, versionID string) bool {
   if project == "" || version == "" || versionID == "" {
-    return false
+    log.Fatal("Illegal param!")
   }
 
   if !PublishAll(project, version) {
@@ -103,12 +103,12 @@ func AutoPublish(project, version, versionID string) bool {
 
 func UploadFile(localPath, project, fileName, relativePath, fileType string) bool {
   if localPath == "" || project == "" || fileName == "" || relativePath == "" || (fileType != "raw" && fileType != "flat") {
-    return false
+    log.Fatal("Illegal param!")
   }
 
   content := file.ReadFile(localPath)
   if content == nil {
-    return false
+    log.Fatal("Read file at", localPath, "failed.")
   }
 
   url := "/api/uploadFile?project=" + project + "&relativePath=" + relativePath + "&fileName=" + fileName + "&fileType=" + fileType
@@ -119,10 +119,37 @@ func UploadFile(localPath, project, fileName, relativePath, fileType string) boo
 
 func RemoveFile(project, fileName string) bool {
   if project == "" || fileName == "" {
-    return false
+    log.Fatal("Illegal param!")
   }
 
   uri := "/api/removeFile?project=" + project + "&fileName=" + fileName
   resp := getURL(uri)
+  return CheckResponse(uri, resp)
+}
+
+func GetTag(project, fileName string) string {
+  if project == "" || fileName == "" {
+    log.Fatal("Illegal param!")
+  }
+
+  uri := "/api/getTag?project=" + project + "&fileName=" + fileName
+  resp := getURL(uri)
+
+  if !CheckResponse(uri, resp) {
+    return ""
+  }
+
+  log.Println("Tag of", fileName, string(resp))
+  return string(resp)
+}
+
+func SetTag(project, fileName, tags string) bool {
+  if project == "" || fileName == "" || tags == "" {
+    log.Fatal("Illegal param!")
+  }
+
+  uri := "/api/setTag?project=" + project + "&fileName=" + fileName + "&tags=" + tags
+  resp := getURL(uri)
+
   return CheckResponse(uri, resp)
 }

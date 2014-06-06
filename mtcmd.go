@@ -47,6 +47,10 @@ func main() {
       api.UploadFile(gval.Args["localPath"], gval.Args["project"], gval.Args["fileName"], gval.Args["relativePath"], gval.Args["fileType"])
     } else if arg == "-rf" || arg == "--remove-file" {
       api.RemoveFile(gval.Args["project"], gval.Args["fileName"])
+    } else if (arg == "-gt" || arg == "--get-tag") && (i+1 < argCnt) {
+      api.GetTag(gval.Args["project"], gval.Args["fileName"])
+    } else if (arg == "-st" || arg == "--set-tag") && (i+2 < argCnt) {
+      api.SetTag(gval.Args["project"], gval.Args["fileName"], gval.Args["tags"])
     }
   }
 }
@@ -89,6 +93,13 @@ func parseArgs(args []string) bool {
     } else if (arg == "-rf" || arg == "--remove-file") && (i+1 < argCnt) {
       gval.Args["fileName"] = os.Args[i+1]
       i++
+    } else if (arg == "-gt" || arg == "--get-tag") && (i+1 < argCnt) {
+      gval.Args["fileName"] = os.Args[i+1]
+      i++
+    } else if (arg == "-st" || arg == "--set-tag") && (i+2 < argCnt) {
+      gval.Args["fileName"] = os.Args[i+1]
+      gval.Args["tags"] = os.Args[i+2]
+      i += 2
     }
 
     existArgs[arg] = ""
@@ -109,6 +120,8 @@ func usage() {
   log.Println("-a  | --address <address>                      Appoint Megaton's address instead of address in config.")
   log.Println("-uf | --upload-file <localPath> <fileName> <relativePath> <fileType> Upload file to megaton, fileType must be \"raw\" or \"flat\".")
   log.Println("-rf | --remove-file <fileName>                 Remove a file, this will not delete file in file system, only mark it as removed.")
+  log.Println("-gt | --get-tag <fileName>                     Get file's tag, tags are seperated by \",\" .")
+  log.Println("-st | --set-tag <fileName> <tags>              Set file's tag, tags are seperated by \",\" .")
   log.Println("-h  | --usage                                  This help.")
   os.Exit(0)
 }
