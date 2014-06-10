@@ -51,6 +51,10 @@ func main() {
       api.GetTag(gval.Args["project"], gval.Args["fileName"])
     } else if (arg == "-st" || arg == "--set-tag") && (i+2 < argCnt) {
       api.SetTag(gval.Args["project"], gval.Args["fileName"], gval.Args["tags"])
+    } else if (arg == "-sp" || arg == "--set-profile") && (i+3 < argCnt) {
+      api.SetProfile(gval.Args["project"], gval.Args["version"], gval.Args["name"], gval.Args["contentPath"])
+    } else if (arg == "-gp" || arg == "--get-profile") && (i+1 < argCnt) {
+      api.GetProfile(gval.Args["project"], gval.Args["version"])
     }
   }
 }
@@ -100,6 +104,14 @@ func parseArgs(args []string) bool {
       gval.Args["fileName"] = os.Args[i+1]
       gval.Args["tags"] = os.Args[i+2]
       i += 2
+    } else if (arg == "-sp" || arg == "--set-profile") && (i+3 < argCnt) {
+      gval.Args["version"] = os.Args[i+1]
+      gval.Args["name"] = os.Args[i+2]
+      gval.Args["contentPath"] = os.Args[i+3]
+      i += 3
+    } else if (arg == "-gp" || arg == "--get-profile") && (i+1 < argCnt) {
+      gval.Args["version"] = os.Args[i+1]
+      i++
     }
 
     existArgs[arg] = ""
@@ -122,6 +134,8 @@ func usage() {
   log.Println("-rf | --remove-file <fileName>                 Remove a file, this will not delete file in file system, only mark it as removed.")
   log.Println("-gt | --get-tag <fileName>                     Get file's tag, tags are seperated by \",\" .")
   log.Println("-st | --set-tag <fileName> <tags>              Set file's tag, tags are seperated by \",\" .")
+  log.Println("-sp | --set-profile <version> <name> <contentPath> Set a profile, profile has same name will be overwritten.")
+  log.Println("-gp | --get-profile <version>                  Get all profiles under specific version.")
   log.Println("-h  | --usage                                  This help.")
   os.Exit(0)
 }

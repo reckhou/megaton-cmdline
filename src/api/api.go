@@ -111,10 +111,10 @@ func UploadFile(localPath, project, fileName, relativePath, fileType string) boo
     log.Fatal("Read file at", localPath, "failed.")
   }
 
-  url := "/api/uploadFile?project=" + project + "&relativePath=" + relativePath + "&fileName=" + fileName + "&fileType=" + fileType
-  responseContent := postURL(url, content)
+  uri := "/api/uploadFile?project=" + project + "&relativePath=" + relativePath + "&fileName=" + fileName + "&fileType=" + fileType
+  responseContent := postURL(uri, content)
 
-  return CheckResponse(url, responseContent)
+  return CheckResponse(uri, responseContent)
 }
 
 func RemoveFile(project, fileName string) bool {
@@ -152,4 +152,37 @@ func SetTag(project, fileName, tags string) bool {
   resp := getURL(uri)
 
   return CheckResponse(uri, resp)
+}
+
+func SetProfile(project, version, name, contentPath string) bool {
+  if project == "" || version == "" || name == "" || contentPath == "" {
+    log.Fatal("Illegal param!")
+  }
+
+  content := file.ReadFile(contentPath)
+  if content == nil {
+    log.Fatal("Read file at", contentPath, "failed.")
+  }
+
+  uri := "/api/setProfile?project=" + project + "&version=" + version + "&name=" + name
+  responseContent := postURL(uri, content)
+
+  return CheckResponse(uri, responseContent)
+}
+
+func GetProfile(project, version string) bool {
+  if project == "" || version == "" {
+    log.Fatal("Illegal param!")
+  }
+
+  uri := "/api/getProfile?project=" + project + "&version=" + version
+  responseContent := getURL(uri)
+
+  if !CheckResponse(uri, responseContent) {
+    return false
+  }
+
+  // TODO: Handle response.
+  log.Println(string(responseContent))
+  return true
 }
