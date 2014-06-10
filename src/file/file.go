@@ -21,3 +21,16 @@ func ReadFile(fullPath string) []byte {
   file.Close()
   return data
 }
+
+func WriteFile(fullPath string, content []byte) bool {
+  file, errFile := os.OpenFile(fullPath, os.O_TRUNC|os.O_WRONLY|os.O_CREATE, 0777)
+  if errFile != nil {
+    log.Println(errFile)
+    return false
+  }
+
+  file.Write(content)
+  file.Close()
+
+  return true
+}

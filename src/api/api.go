@@ -3,8 +3,22 @@ package api
 import (
   js "github.com/bitly/go-simplejson"
   "github.com/reckhou/megaton-cmdline/src/file"
+  gval "github.com/reckhou/megaton-cmdline/src/globalVal"
   "log"
 )
+
+func GetSavePath() string {
+  if gval.Args["save"] != "" {
+    return gval.Args["save"]
+  }
+
+  return "./tmp.mtsav"
+}
+
+func SaveResponse(content []byte) bool {
+  savePath := GetSavePath()
+  return file.WriteFile(savePath, content)
+}
 
 func PushToOSS(project string) bool {
   if project == "" {
@@ -127,7 +141,7 @@ func RemoveFile(project, fileName string) bool {
   return CheckResponse(uri, resp)
 }
 
-func GetTag(project, fileName string) string {
+func GetTag(project, fileName string) bool {
   if project == "" || fileName == "" {
     log.Fatal("Illegal param!")
   }
@@ -136,11 +150,11 @@ func GetTag(project, fileName string) string {
   resp := getURL(uri)
 
   if !CheckResponse(uri, resp) {
-    return ""
+    return false
   }
 
   log.Println("Tag of", fileName, string(resp))
-  return string(resp)
+  return SaveResponse(resp)
 }
 
 func SetTag(project, fileName, tags string) bool {
@@ -182,7 +196,6 @@ func GetProfile(project, version string) bool {
     return false
   }
 
-  // TODO: Handle response.
   log.Println(string(responseContent))
-  return true
+  return SaveResponse(responseContent)
 }

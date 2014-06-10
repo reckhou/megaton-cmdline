@@ -70,6 +70,9 @@ func parseArgs(args []string) bool {
     if (arg == "-p" || arg == "--project") && (i+1 < argCnt) {
       gval.Args["project"] = os.Args[i+1]
       i++
+    } else if (arg == "-s" || arg == "--save") && (i+1 < argCnt) {
+      gval.Args["save"] = os.Args[i+1]
+      i++
     } else if (arg == "-pa" || arg == "--publish-all") && (i+1 < argCnt) {
       gval.Args["version"] = os.Args[i+1]
       i++
@@ -122,14 +125,15 @@ func parseArgs(args []string) bool {
 
 func usage() {
   log.Println("-p  | --project <project>                      The project you are working on. This option is a MUST.")
+  log.Println("-s  | --save <path>                            Appoint result save path of all \"get\" APIs(optional). Cmdline tool will save to \"tmp.mtsav\" under current directory if save path not appointed.")
+  log.Println("-v  | --verbose                                Print debug log.")
+  log.Println("-a  | --address <address>                      Appoint Megaton's address instead of address in config.")
   log.Println("-pa | --publish-all <version>                  Publish all dat files with different profiles.")
   log.Println("-np | --notify-publish <version>               Notify Kiloton to update dat files' info to latest publish through Megaton.")
   log.Println("-ov | --online-versionID <versionID>           Set online versionID of client. The client with higher versionID will be treat as test environment by Kiloton.")
   log.Println("-ap | --auto-publish <version> <versionID>     A combination of -pa, -np and -ov. Used for fully automatic publish process.")
   log.Println("-po | --push-to-oss                            Push asset to Aliyun OSS.")
   log.Println("-pc | --push-to-cdn                            Push asset to CDN.")
-  log.Println("-v  | --verbose                                Print debug log.")
-  log.Println("-a  | --address <address>                      Appoint Megaton's address instead of address in config.")
   log.Println("-uf | --upload-file <localPath> <fileName> <relativePath> <fileType> Upload file to megaton, fileType must be \"raw\" or \"flat\".")
   log.Println("-rf | --remove-file <fileName>                 Remove a file, this will not delete file in file system, only mark it as removed.")
   log.Println("-gt | --get-tag <fileName>                     Get file's tag, tags are seperated by \",\" .")
