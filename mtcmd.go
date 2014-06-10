@@ -55,6 +55,10 @@ func main() {
       api.SetProfile(gval.Args["project"], gval.Args["version"], gval.Args["name"], gval.Args["contentPath"])
     } else if (arg == "-gp" || arg == "--get-profile") && (i+1 < argCnt) {
       api.GetProfile(gval.Args["project"], gval.Args["version"])
+    } else if (arg == "-rp" || arg == "--remove-profile") && (i+1 < argCnt) {
+      api.RemoveProfile(gval.Args["project"], gval.Args["version"], gval.Args["name"])
+    } else if (arg == "-cp" || arg == "--copy-profile") && (i+4 < argCnt) {
+      api.CopyProfile(gval.Args["project"], gval.Args["fromVersion"], gval.Args["fromName"], gval.Args["toVersion"], gval.Args["toName"])
     }
   }
 }
@@ -115,6 +119,16 @@ func parseArgs(args []string) bool {
     } else if (arg == "-gp" || arg == "--get-profile") && (i+1 < argCnt) {
       gval.Args["version"] = os.Args[i+1]
       i++
+    } else if (arg == "-rp" || arg == "--remove-profile") && (i+2 < argCnt) {
+      gval.Args["version"] = os.Args[i+1]
+      gval.Args["name"] = os.Args[i+2]
+      i += 2
+    } else if (arg == "-cp" || arg == "--copy-profile") && (i+4 < argCnt) {
+      gval.Args["fromVersion"] = os.Args[i+1]
+      gval.Args["fromName"] = os.Args[i+2]
+      gval.Args["toVersion"] = os.Args[i+3]
+      gval.Args["toName"] = os.Args[i+4]
+      i += 4
     }
 
     existArgs[arg] = ""
@@ -140,6 +154,8 @@ func usage() {
   log.Println("-st | --set-tag <fileName> <tags>              Set file's tag, tags are seperated by \",\" .")
   log.Println("-sp | --set-profile <version> <name> <contentPath> Set a profile, profile has same name will be overwritten.")
   log.Println("-gp | --get-profile <version>                  Get all profiles under specific version.")
+  log.Println("-rp | --remove-profile <version> <name>        Remove profile under specific version.")
+  log.Println("-cp | --copy-profile <fromVersion> <fromName> <toVersion> <toName> Copy profile under specific version.")
   log.Println("-h  | --usage                                  This help.")
   os.Exit(0)
 }

@@ -199,3 +199,25 @@ func GetProfile(project, version string) bool {
   log.Println(string(responseContent))
   return SaveResponse(responseContent)
 }
+
+func RemoveProfile(project, version, name string) bool {
+  if project == "" || version == "" || name == "" {
+    log.Fatal("Illegal param!")
+  }
+
+  uri := "/api/removeProfile?project=" + project + "&version=" + version + "&name=" + name
+  responseContent := getURL(uri)
+
+  return CheckResponse(uri, responseContent)
+}
+
+func CopyProfile(project, fromVersion, fromName, toVersion, toName string) bool {
+  if project == "" || fromVersion == "" || fromName == "" || toVersion == "" || toName == "" {
+    log.Fatal("Illegal param!")
+  }
+
+  uri := "/api/copyProfile?project=" + project + "&fromVersion=" + fromVersion + "&fromName=" + fromName + "&toVersion=" + toVersion + "&toName=" + toName
+  responseContent := getURL(uri)
+
+  return CheckResponse(uri, responseContent)
+}
