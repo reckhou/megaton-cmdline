@@ -13,3 +13,6 @@ mkdir -p $CURDIR/bin/config
 cp $CURDIR/doc/config.json $CURDIR/bin/config/
 gofmt -w=true -tabwidth=2 -tabs=false $CURDIR
 go build -v -o $EXPORTPATH $SRCPATH
+
+EXPORTPATH=$CURDIR/bin/mt_linux_amd64
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o $EXPORTPATH $SRCPATH
