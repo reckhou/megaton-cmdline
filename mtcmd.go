@@ -55,10 +55,14 @@ func main() {
       api.SetProfile(gval.Args["project"], gval.Args["version"], gval.Args["name"], gval.Args["contentPath"])
     } else if (arg == "-gp" || arg == "--get-profile") && (i+1 < argCnt) {
       api.GetProfile(gval.Args["project"], gval.Args["version"])
-    } else if (arg == "-rp" || arg == "--remove-profile") && (i+1 < argCnt) {
+    } else if (arg == "-rp" || arg == "--remove-profile") && (i+2 < argCnt) {
       api.RemoveProfile(gval.Args["project"], gval.Args["version"], gval.Args["name"])
     } else if (arg == "-cp" || arg == "--copy-profile") && (i+4 < argCnt) {
       api.CopyProfile(gval.Args["project"], gval.Args["fromVersion"], gval.Args["fromName"], gval.Args["toVersion"], gval.Args["toName"])
+    } else if (arg == "-apc" || arg == "--add-patch") && (i+3 < argCnt) {
+      api.AddPatchFile(gval.Args["project"], gval.Args["version"], gval.Args["file"], gval.Args["profile"])
+    } else if (arg == "-rpc" || arg == "--remove-patch") && (i+3 < argCnt) {
+      api.RemovePatchFile(gval.Args["project"], gval.Args["version"], gval.Args["file"], gval.Args["profile"])
     }
   }
 }
@@ -129,6 +133,16 @@ func parseArgs(args []string) bool {
       gval.Args["toVersion"] = os.Args[i+3]
       gval.Args["toName"] = os.Args[i+4]
       i += 4
+    } else if (arg == "-apc" || arg == "--add-patch") && (i+3 < argCnt) {
+      gval.Args["version"] = os.Args[i+1]
+      gval.Args["file"] = os.Args[i+2]
+      gval.Args["profile"] = os.Args[i+3]
+      i += 3
+    } else if (arg == "-rpc" || arg == "--remove-patch") && (i+3 < argCnt) {
+      gval.Args["version"] = os.Args[i+1]
+      gval.Args["file"] = os.Args[i+2]
+      gval.Args["profile"] = os.Args[i+3]
+      i += 3
     }
 
     existArgs[arg] = ""
@@ -156,6 +170,8 @@ func usage() {
   log.Println("-gp | --get-profile <version>                  Get all profiles under specific version.")
   log.Println("-rp | --remove-profile <version> <name>        Remove profile under specific version.")
   log.Println("-cp | --copy-profile <fromVersion> <fromName> <toVersion> <toName> Copy profile under specific version.")
+  log.Println("-apc| --add-patch <version> <patch> <profile>  (Kiloton)Add a patch file under specific version.")
+  log.Println("-rpc| --remove-patch <version> <patch> <profile> (Kiloton)Remove a patch file under specific version.")
   log.Println("-h  | --usage                                  This help.")
   os.Exit(0)
 }

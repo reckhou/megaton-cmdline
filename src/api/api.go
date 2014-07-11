@@ -221,3 +221,25 @@ func CopyProfile(project, fromVersion, fromName, toVersion, toName string) bool 
 
   return CheckResponse(uri, responseContent)
 }
+
+func AddPatchFile(project, version, file, profile string) bool {
+  if project == "" || version == "" || file == "" || profile == "" {
+    log.Fatal("Illegal param!")
+  }
+
+  uri := "/addPatchFile?project=" + project + "&version=" + version + "&file=" + file + "&profile=" + profile
+  responseContent := getURL(uri)
+
+  return CheckResponse(uri, responseContent)
+}
+
+func RemovePatchFile(project, version, file, profile string) bool {
+  if project == "" || version == "" || file == "" || profile == "" {
+    log.Fatal("Illegal param!")
+  }
+
+  uri := "/removePatchFile?project=" + project + "&version=" + version + "&file=" + file + "&profile=" + profile
+  responseContent := getURL(uri)
+
+  return CheckResponse(uri, responseContent)
+}
