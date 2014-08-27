@@ -83,11 +83,11 @@ func parseArgs(args []string) bool {
       i++
     } else if (arg == "-pa" || arg == "--publish-all") && (i+1 < argCnt) {
       gval.Args["version"] = os.Args[i+1]
-      i++
       if i+2 < argCnt {
         gval.Args["assetVersion"] = os.Args[i+2]
         i++
       }
+      i++
     } else if (arg == "-np" || arg == "--notify-publish") && (i+1 < argCnt) {
       gval.Args["version"] = os.Args[i+1]
       i++
@@ -97,11 +97,11 @@ func parseArgs(args []string) bool {
     } else if (arg == "-ap" || arg == "--auto-publish") && (i+2 < argCnt) {
       gval.Args["version"] = os.Args[i+1]
       gval.Args["versionID"] = os.Args[i+2]
-      i += 2
       if i+3 < argCnt {
         gval.Args["assetVersion"] = os.Args[i+3]
         i++
       }
+      i += 2
     } else if (arg == "-a" || arg == "--address") && (i+1 < argCnt) {
       gval.Args["MTAddr"] = os.Args[i+1]
       i++
