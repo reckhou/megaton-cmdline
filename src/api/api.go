@@ -40,12 +40,15 @@ func PushToCDN(project string) bool {
   return CheckResponse(uri, resp)
 }
 
-func PublishAll(project, version string) bool {
+func PublishAll(project, version, assetVersion string) bool {
   if project == "" || version == "" {
     log.Fatal("Illegal param!")
   }
 
   uri := "/api/publishAll?project=" + project + "&version=" + version
+  if assetVersion != "" {
+    uri += "&assetVersion=" + assetVersion
+  }
   resp := getURL(uri)
   return CheckResponse(uri, resp)
 }
@@ -95,12 +98,12 @@ func CheckResponse(request string, response []byte) bool {
   return true
 }
 
-func AutoPublish(project, version, versionID string) bool {
+func AutoPublish(project, version, versionID, assetVersion string) bool {
   if project == "" || version == "" || versionID == "" {
     log.Fatal("Illegal param!")
   }
 
-  if !PublishAll(project, version) {
+  if !PublishAll(project, version, assetVersion) {
     return false
   }
 

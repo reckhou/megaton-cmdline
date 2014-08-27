@@ -32,13 +32,13 @@ func main() {
     if arg == "-h" || arg == "--usage" {
       usage()
     } else if arg == "-pa" || arg == "--publish-all" {
-      api.PublishAll(gval.Args["project"], gval.Args["version"])
+      api.PublishAll(gval.Args["project"], gval.Args["version"], gval.Args["assetVersion"])
     } else if arg == "-np" || arg == "--notify-publish" {
       api.NotifyPublish(gval.Args["project"], gval.Args["version"])
     } else if arg == "-ov" || arg == "--online-version" {
       api.SetOnlineVersionID(gval.Args["project"], gval.Args["versionID"])
     } else if arg == "-ap" || arg == "--auto-publish" {
-      api.AutoPublish(gval.Args["project"], gval.Args["version"], gval.Args["versionID"])
+      api.AutoPublish(gval.Args["project"], gval.Args["version"], gval.Args["versionID"], gval.Args["assetVersion"])
     } else if arg == "-po" || arg == "--push-to-oss" {
       api.PushToOSS(gval.Args["project"])
     } else if arg == "-pc" || arg == "--push-to-cdn" {
@@ -84,6 +84,10 @@ func parseArgs(args []string) bool {
     } else if (arg == "-pa" || arg == "--publish-all") && (i+1 < argCnt) {
       gval.Args["version"] = os.Args[i+1]
       i++
+      if i+2 < argCnt {
+        gval.Args["assetVersion"] = os.Args[i+2]
+        i++
+      }
     } else if (arg == "-np" || arg == "--notify-publish") && (i+1 < argCnt) {
       gval.Args["version"] = os.Args[i+1]
       i++
@@ -94,6 +98,10 @@ func parseArgs(args []string) bool {
       gval.Args["version"] = os.Args[i+1]
       gval.Args["versionID"] = os.Args[i+2]
       i += 2
+      if i+3 < argCnt {
+        gval.Args["assetVersion"] = os.Args[i+3]
+        i++
+      }
     } else if (arg == "-a" || arg == "--address") && (i+1 < argCnt) {
       gval.Args["MTAddr"] = os.Args[i+1]
       i++
